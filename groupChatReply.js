@@ -6,6 +6,7 @@
 // @match           https://www.torn.com/*
 // @grant           none
 // @run-at          document-end
+// @description     Adds a reply functionality to room chats (faction, global, trade etc.) to help users address each other in more easily during high chat traffic. Click on a message to start a reply, click the "replying to" tab that pops up to clear.
 // ==/UserScript==
 
 (async function () {
