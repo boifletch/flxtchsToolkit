@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            FTK - Group Chat Reply
 // @namespace       https://github.com/boifletch
-// @version         0.9
+// @version         0.91
 // @author          flxtch
 // @match           https://www.torn.com/*
 // @grant           none
