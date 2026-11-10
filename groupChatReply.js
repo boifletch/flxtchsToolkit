@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name            Group Chat Reply
+// @name            FTK - Group Chat Reply
 // @namespace       https://github.com/boifletch
 // @version         0.9
 // @author          flxtch
