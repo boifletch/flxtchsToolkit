@@ -6,7 +6,7 @@
 // @match           https://www.torn.com/*
 // @grant           none
 // @run-at          document-end
-// @description     Adds a reply functionality to room chats (faction, global, trade etc.) to help users address each other more easily during high chat traffic. Click on a message to start a reply, click the "replying to {name}" tab to clear.
+// @description     Adds a "below-quote" style reply functionality to room chats (faction, global, trade etc.). Click on a message to start a reply, click the "replying to {name}" tab to clear.
 // ==/UserScript==
 
 (async function () {
