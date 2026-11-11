@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            FTK - Group Chat Reply
 // @namespace       https://github.com/boifletch
-// @version         0.93.1
+// @version         0.93.11
 // @author          flxtch
 // @match           https://www.torn.com/*
 // @grant           none
@@ -110,7 +110,7 @@
           onSend();
         }
         function onclk(e) {
-          const concatAt = 50;
+          const concatAt = 400;
           const flags = [
             "root___EP_Dq",
             "box___eWW6m",
