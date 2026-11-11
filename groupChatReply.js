@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            FTK - Group Chat Reply
 // @namespace       https://github.com/boifletch
-// @version         0.91
+// @version         0.92
 // @author          flxtch
 // @match           https://www.torn.com/*
 // @grant           none
@@ -121,9 +121,9 @@
           if (message.startsWith('"')) message = message.slice(1);
           if (message.endsWith('"'))
             message = message.slice(0, message.length - 1);
-          const content = excludeFlavourText
+          const content = (excludeFlavourText
             ? message
-            : `*replied to* **${sender}**\n*"${message}"*\n\n`;
+            : `*replied to* **${sender}**\n*"${message}"*\n\n`)  + tArea.value;
 
           replyTab.innerText = `replying to ${sender}`;
           tArea.value = content;
