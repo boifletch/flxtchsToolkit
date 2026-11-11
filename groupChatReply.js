@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            FTK - Group Chat Reply
 // @namespace       https://github.com/boifletch
-// @version         0.93.11
+// @version         0.93.12
 // @author          flxtch
 // @match           https://www.torn.com/*
 // @grant           none
@@ -179,11 +179,12 @@
           tArea.addEventListener("keydown", onKey);
         }
         function onKey(e) {
-          if (e.key === "Enter") onSend();
+          console.log(e);
+          if (e.key === "Enter" && !e.shiftKey) onSend();
         }
         function onSend() {
           setTimeout(onDisable, 100); // otherwise runs preflight
-          //! likely to be overhauled if messages can be edited preflight 
+          //! likely to be overhauled if messages can be edited preflight
           //?   (removing the need to have reply content present while client is typing)
         }
       }
