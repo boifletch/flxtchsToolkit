@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            FTK - Group Chat Reply
 // @namespace       https://github.com/boifletch
-// @version         0.92
+// @version         0.92b
 // @author          flxtch
 // @match           https://www.torn.com/*
 // @grant           none
@@ -121,9 +121,11 @@
           if (message.startsWith('"')) message = message.slice(1);
           if (message.endsWith('"'))
             message = message.slice(0, message.length - 1);
-          const content = (excludeFlavourText
-            ? message
-            : `*replied to* **${sender}**\n*"${message}"*\n\n`)  + tArea.value;
+          const content =
+            (excludeFlavourText
+              ? message
+              : `*replied to* **${sender}**\n*"${message}"*\n\n`) +
+            (replyTab.classList.contains("vis") ? "" : tArea.value);
 
           replyTab.innerText = `replying to ${sender}`;
           tArea.value = content;
