@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            FTK - Group Chat Reply
 // @namespace       https://github.com/boifletch
-// @version         0.93
+// @version         0.93.1
 // @author          flxtch
 // @match           https://www.torn.com/*
 // @grant           none
@@ -72,18 +72,45 @@
         const messageStorageKey = getRoomKey(roomType);
         const replyTargetKey = messageStorageKey + ":replyingTo";
         const propsKey = getPropsKey();
+        const latestQuote = getLatestQuoteKey(roomType);
         replyTab.classList.add("rdiv");
         chatInner.children[0].insertAdjacentElement("afterend", replyTab);
         replyTab.addEventListener("click", onDisable);
         chatInner.addEventListener("click", onclk);
-        if (window.localStorage[replyTargetKey])
-          onEnable(
-            window.localStorage[replyTargetKey],
-            window.localStorage[messageStorageKey],
-            true,
+        if (!window.localStorage[replyTargetKey]) return;
+
+        onEnable(
+          window.localStorage[replyTargetKey],
+          window.localStorage[messageStorageKey]
+            ? window.localStorage[messageStorageKey]
+            : "",
+          true,
+        );
+
+        function getClientText() {
+          const stored = tArea.value.replaceAll(
+            window.localStorage[latestQuote],
+            "",
           );
+          return stored ? stored : "";
+        }
+        function getLatestQuoteKey(k) {
+          return `tchat:room:${k}:latestQuote`;
+        }
+        function getPropsKey() {
+          return Object.keys(tArea).find((k) => k.includes("__reactProps"));
+        }
+        function getQuotedReply(sender, message) {
+          return `*replied to* **${sender}**\n*"${message}"*\n\n`;
+        }
+        function getRoomKey(k) {
+          return `tchat:room:${k}:input`;
+        }
+        function onButton() {
+          onSend();
+        }
         function onclk(e) {
-          const concatAt = 400;
+          const concatAt = 50;
           const flags = [
             "root___EP_Dq",
             "box___eWW6m",
@@ -106,39 +133,15 @@
           const sender = rootEl
             .querySelector(".sender___WTwPl")
             .innerText.replaceAll(":", "");
-          const message = rootEl.querySelector(
+          const quotedMessage = rootEl.querySelector(
             "." + flags[flags.length - 1],
           ).innerText;
           onEnable(
             sender,
-            message.length <= concatAt
-              ? message
-              : message.slice(0, concatAt + 1) + "...",
+            quotedMessage.length <= concatAt
+              ? quotedMessage
+              : quotedMessage.slice(0, concatAt + 1) + "...",
           );
-        }
-        function onEnable(sender, message, excludeFlavourText = false) {
-          message = message.replaceAll("\\n", "\n").replaceAll("\\", "");
-          if (message.startsWith('"')) message = message.slice(1);
-          if (message.endsWith('"'))
-            message = message.slice(0, message.length - 1);
-          const content =
-            (excludeFlavourText
-              ? message
-              : `*replied to* **${sender}**\n*"${message}"*\n\n`) +
-            (replyTab.classList.contains("vis") ? "" : tArea.value);
-
-          replyTab.innerText = `replying to ${sender}`;
-          tArea.value = content;
-          tArea.defaultValue = content;
-          tArea[propsKey].onChange({ target: { value: content } });
-          replyTab.classList.add("vis");
-          tArea.focus();
-          tArea.setSelectionRange(9999, 9999);
-          tArea.scrollTo({ top: 9999, behaviour: "smooth" });
-          window.localStorage[replyTargetKey] = sender;
-          window.localStorage[messageStorageKey] = content;
-          sBtn.addEventListener("click", onButton);
-          tArea.addEventListener("keydown", onKey);
         }
         function onDisable() {
           replyTab.innerText = "";
@@ -149,26 +152,42 @@
           tArea.focus();
           window.localStorage[replyTargetKey] = "";
           window.localStorage[messageStorageKey] = "";
+          window.localStorage[latestQuote] = "";
           sBtn.removeEventListener("click", onButton);
           tArea.removeEventListener("keydown", onKey);
+        }
+        function onEnable(sender, message, postRaw = false) {
+          message = message.replaceAll("\\n", "\n").replaceAll("\\", ""); // torn stringifys newlines when saving to localStorage, this is easiest for me
+          if (message.startsWith('"')) message = message.slice(1);
+          if (message.endsWith('"'))
+            message = message.slice(0, message.length - 1);
+          const quotedReply = getQuotedReply(sender, message);
+          const clientText = getClientText();
+          const content = postRaw ? message : quotedReply + clientText;
+          replyTab.classList.add("vis");
+          replyTab.innerText = `replying to ${sender}`;
+          tArea.value = content;
+          tArea.defaultValue = content;
+          tArea[propsKey].onChange({ target: { value: content } });
+          tArea.focus();
+          tArea.setSelectionRange(9999, 9999);
+          tArea.scrollTo({ top: 9999, behaviour: "smooth" });
+          window.localStorage[replyTargetKey] = sender;
+          window.localStorage[messageStorageKey] = content;
+          window.localStorage[latestQuote] = quotedReply;
+          sBtn.addEventListener("click", onButton);
+          tArea.addEventListener("keydown", onKey);
         }
         function onKey(e) {
           if (e.key === "Enter") onSend();
         }
-        function onButton() {
-          onSend();
-        }
         function onSend() {
-          setTimeout(onDisable, 100);
-        }
-        function getPropsKey() {
-          return Object.keys(tArea).find((k) => k.includes("__reactProps"));
+          setTimeout(onDisable, 100); // otherwise runs preflight
+          //! likely to be overhauled if messages can be edited preflight 
+          //?   (removing the need to have reply content present while client is typing)
         }
       }
-      function injectToDM(chatInner) {}
-      function getRoomKey(k) {
-        return `tchat:room:${k}:input`;
-      }
+      function injectToDM(chatInner) {} //? for eventual DM support
     }
   }
 })();
