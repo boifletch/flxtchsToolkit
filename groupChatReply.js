@@ -7,6 +7,7 @@
 // @grant           none
 // @run-at          document-end
 // @description     Adds a reply functionality to room chats (faction, global, trade etc.) to help users address each other in more easily during high chat traffic. Click on a message to start a reply, click the "replying to {name}" tab to clear.
+// @license         MIT
 // ==/UserScript==
 
 (async function () {
@@ -129,9 +130,9 @@
           tArea.defaultValue = content;
           tArea[propsKey].onChange({ target: { value: content } });
           replyTab.classList.add("vis");
-          tArea.focus()
-          tArea.setSelectionRange(9999,9999)
-          tArea.scrollTo({top: 9999, behaviour: "smooth"})
+          tArea.focus();
+          tArea.setSelectionRange(9999, 9999);
+          tArea.scrollTo({ top: 9999, behaviour: "smooth" });
           window.localStorage[replyTargetKey] = sender;
           window.localStorage[messageStorageKey] = content;
           sBtn.addEventListener("click", onButton);
