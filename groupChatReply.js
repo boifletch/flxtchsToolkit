@@ -179,7 +179,6 @@
           tArea.addEventListener("keydown", onKey);
         }
         function onKey(e) {
-          console.log(e);
           if (e.key === "Enter" && !e.shiftKey) onSend();
         }
         function onSend() {
